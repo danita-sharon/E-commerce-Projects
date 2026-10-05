@@ -14,7 +14,7 @@ include '../layout/header.php';
     <p><strong>Email:</strong> <?php echo htmlspecialchars($_SESSION['customer_email']); ?></p>
   <?php endif; ?>
 
-  <p><a href="/~danita.quarshie/shoppn/logout.php">Logout</a></p>
+  <p><a href="/shoppn/logout.php">Logout</a></p>
 
 </main>
 

@@ -29,10 +29,12 @@ document.getElementById('registerForm').addEventListener('submit', function (eve
     formIsValid = false;
   }
 
-  if (pass.length < 6) {
-    showError('pass', 'Password must be at least 6 characters.');
-    formIsValid = false;
-  }
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
+if (!passwordRegex.test(pass)) {
+  showError('pass', 'Password must be at least 8 characters and include uppercase, lowercase, a number, and a special character.');
+  formIsValid = false;
+}
 
   if (city === '') {
     showError('city', 'Please enter your city.');

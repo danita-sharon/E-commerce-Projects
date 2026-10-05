@@ -13,12 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $_SESSION['error'] = 'Please enter a valid email address.';
-    redirect('/~danita.quarshie/shoppn/views/register.php');
+    redirect('/shoppn/views/register.php');
   }
 
   if (strlen($email) > 50) {
     $_SESSION['error'] = 'Email is too long.';
-    redirect('/~danita.quarshie/shoppn/views/register.php');
+    redirect('/shoppn/views/register.php');
   }
 
   $controller = new CustomerController();
@@ -40,13 +40,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['customer_email'] = $newCustomer['customer_email'];
     $_SESSION['user_role'] = $newCustomer['user_role'];
 
-    redirect('/~danita.quarshie/shoppn/views/account/my_account.php');
+    redirect('/shoppn/views/account/my_account.php');
   } else {
     $_SESSION['error'] = $result['error'];
-    redirect('/~danita.quarshie/shoppn/views/register.php');
+    redirect('/shoppn/views/register.php');
   }
 
 } else {
-  redirect('/~danita.quarshie/shoppn/views/register.php');
+  redirect('/shoppn/views/register.php');
 }
 ?>

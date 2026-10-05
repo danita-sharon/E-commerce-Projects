@@ -18,13 +18,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['customer_email'] = $customer['customer_email'];
     $_SESSION['user_role'] = $customer['user_role'];
 
-    redirect('/~danita.quarshie/shoppn/index.php');
+    redirect('/shoppn/index.php');
   } else {
     $_SESSION['error'] = $result['error'];
-    redirect('/~danita.quarshie/shoppn/views/login.php');
+    redirect('/shoppn/views/login.php');
   }
 
 } else {
-  redirect('/~danita.quarshie/shoppn/views/login.php');
+  redirect('/shoppn/views/login.php');
 }
 ?>
