@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   if ($brandName === '') {
     $_SESSION['error'] = 'Brand name cannot be empty.';
-    redirect('/shoppn/views/admin/brand.php');
+    redirect('/~danita.quarshie/shoppn/views/admin/brand.php');
   }
 
   $controller = new ProductController();
@@ -22,8 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['error'] = 'Something went wrong. Please try again.';
   }
 
-  redirect('/shoppn/views/admin/brand.php');
+  redirect('/~danita.quarshie/shoppn/views/admin/brand.php');
 
 } else {
-  redirect('/shoppn/views/admin/brand.php');
+  redirect('/~danita.quarshie/shoppn/views/admin/brand.php');
 }

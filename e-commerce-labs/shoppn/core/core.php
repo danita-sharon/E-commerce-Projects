@@ -19,13 +19,14 @@ function is_admin() {
 
 function require_login() {
   if (!is_logged_in()) {
-    redirect('/shoppn/views/login.php');
+    redirect('/~danita.quarshie/shoppn/views/login.php');
   }
 }
 
 function require_admin() {
   if (!is_admin()) {
-    redirect('/shoppn/index.php');
+    redirect('/~danita.quarshie/shoppn/index.php');
   }
 }
 ?>
+

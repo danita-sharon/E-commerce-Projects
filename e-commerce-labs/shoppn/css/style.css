@@ -1018,3 +1018,74 @@ transition: none !important;
 }
 
 }
+/* =========================
+   ADMIN HOME DASHBOARD
+========================= */
+
+.home-page {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.home-welcome {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.home-welcome h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.home-welcome p {
+  color: #666;
+  font-size: 17px;
+}
+
+.admin-dashboard {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+}
+
+.admin-dashboard-card {
+  display: block;
+  padding: 35px;
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-dashboard-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.admin-card-icon {
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+
+.admin-dashboard-card h2 {
+  margin: 0 0 10px;
+  font-size: 22px;
+}
+
+.admin-dashboard-card p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.admin-dashboard-card span {
+  font-weight: bold;
+}
+
+@media (max-width: 700px) {
+  .admin-dashboard {
+    grid-template-columns: 1fr;
+  }
+}
