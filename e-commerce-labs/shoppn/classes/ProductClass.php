@@ -1,3 +1,4 @@
+
 <?php
 require_once __DIR__ . '/../core/db_class.php';
 
@@ -78,6 +79,109 @@ class ProductClass extends Database {
     $stmt = $this->conn->prepare($sql);
     $stmt->bind_param("i", $id);
     return $stmt->execute();
+  }
+
+
+  // PRODUCT METHODS
+
+  public function addProduct($cat, $brand, $title, $price, $desc, $image_filename, $keywords) {
+    $sql = "INSERT INTO products
+            (product_cat, product_brand, product_title, product_price,
+             product_desc, product_image, product_keywords)
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param(
+      "iisdsss",
+      $cat,
+      $brand,
+      $title,
+      $price,
+      $desc,
+      $image_filename,
+      $keywords
+    );
+
+    return $stmt->execute();
+  }
+
+  public function updateProduct($id, $cat, $brand, $title, $price, $desc, $image_filename, $keywords) {
+    $sql = "UPDATE products
+            SET product_cat = ?,
+                product_brand = ?,
+                product_title = ?,
+                product_price = ?,
+                product_desc = ?,
+                product_image = ?,
+                product_keywords = ?
+            WHERE product_id = ?";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param(
+      "iisdsssi",
+      $cat,
+      $brand,
+      $title,
+      $price,
+      $desc,
+      $image_filename,
+      $keywords,
+      $id
+    );
+
+    return $stmt->execute();
+  }
+
+  public function getProductById($id) {
+    $sql = "SELECT p.*,
+                   c.cat_name,
+                   b.brand_name
+            FROM products p
+            LEFT JOIN categories c ON p.product_cat = c.cat_id
+            LEFT JOIN brands b ON p.product_brand = b.brand_id
+            WHERE p.product_id = ?";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    return $result->fetch_assoc();
+  }
+
+  public function getAllProducts() {
+    $sql = "SELECT p.*, c.cat_name, b.brand_name
+            FROM products p
+            LEFT JOIN categories c ON p.product_cat = c.cat_id
+            LEFT JOIN brands b ON p.product_brand = b.brand_id
+            ORDER BY p.product_id DESC";
+
+    $result = $this->conn->query($sql);
+
+    return $result->fetch_all(MYSQLI_ASSOC);
+  }
+
+
+  // SEARCH PRODUCTS
+
+  public function searchProducts($query) {
+    $sql = "SELECT p.*, c.cat_name, b.brand_name
+            FROM products p
+            LEFT JOIN categories c ON p.product_cat = c.cat_id
+            LEFT JOIN brands b ON p.product_brand = b.brand_id
+            WHERE p.product_title LIKE ?
+               OR p.product_keywords LIKE ?
+            ORDER BY p.product_id DESC";
+
+    $searchTerm = "%" . $query . "%";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("ss", $searchTerm, $searchTerm);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    return $result->fetch_all(MYSQLI_ASSOC);
   }
 
 }

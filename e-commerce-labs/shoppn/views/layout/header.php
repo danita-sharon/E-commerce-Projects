@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Shoppn</title>
-  <link rel="stylesheet" href="/~danita.quarshie/shoppn/css/style.css">
+  <link rel="stylesheet" href="/~danita.quarshie/shoppn/css/style.css?v=3">
 </head>
 <body>
 

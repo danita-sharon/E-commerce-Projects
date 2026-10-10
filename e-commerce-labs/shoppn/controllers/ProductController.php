@@ -53,5 +53,48 @@ class ProductController {
     return $this->productClass->deleteCategory($id);
   }
 
+
+  // PRODUCT METHODS
+
+  public function addProduct($cat, $brand, $title, $price, $desc, $image_filename, $keywords) {
+    return $this->productClass->addProduct(
+      $cat,
+      $brand,
+      $title,
+      $price,
+      $desc,
+      $image_filename,
+      $keywords
+    );
+  }
+
+  public function updateProduct($id, $cat, $brand, $title, $price, $desc, $image_filename, $keywords) {
+    return $this->productClass->updateProduct(
+      $id,
+      $cat,
+      $brand,
+      $title,
+      $price,
+      $desc,
+      $image_filename,
+      $keywords
+    );
+  }
+
+  public function getProductById($id) {
+    return $this->productClass->getProductById($id);
+  }
+
+  public function getAllProducts() {
+    return $this->productClass->getAllProducts();
+  }
+
+
+  // SEARCH PRODUCTS
+
+  public function searchProducts($query) {
+    return $this->productClass->searchProducts($query);
+  }
+
 }
 ?>

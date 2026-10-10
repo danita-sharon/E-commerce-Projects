@@ -1045,8 +1045,12 @@ transition: none !important;
 
 .admin-dashboard {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 25px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.admin-dashboard-card {
+  min-width: 0;
 }
 
 .admin-dashboard-card {
@@ -1087,5 +1091,20 @@ transition: none !important;
 @media (max-width: 700px) {
   .admin-dashboard {
     grid-template-columns: 1fr;
+  }
+}
+
+
+/* Fix homepage admin cards - three in one row */
+@media (min-width: 701px) {
+  .home-page .admin-dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .home-page .admin-dashboard-card {
+    min-width: 0;
+    padding: 25px;
   }
 }

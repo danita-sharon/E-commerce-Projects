@@ -12,7 +12,6 @@ include '../layout/header.php';
     <p>Manage your Shoppn store from one place.</p>
   </div>
 
-
   <div class="dashboard-grid">
 
     <!-- Manage Brands -->
@@ -24,21 +23,33 @@ include '../layout/header.php';
 
       <div class="dashboard-card-content">
         <h2>Manage Brands</h2>
-
-        <p>
-          Add, edit, and delete product brands.
-        </p>
+        <p>Add, edit, and delete product brands.</p>
       </div>
 
-      <span class="dashboard-arrow">
-        →
-      </span>
+      <span class="dashboard-arrow">→</span>
 
     </a>
 
 
-    <!-- Products -->
-    <div class="dashboard-card dashboard-card-disabled">
+    <!-- Manage Categories -->
+    <a href="category.php" class="dashboard-card">
+
+      <div class="dashboard-icon">
+        📦
+      </div>
+
+      <div class="dashboard-card-content">
+        <h2>Manage Categories</h2>
+        <p>Add, edit, and delete product categories.</p>
+      </div>
+
+      <span class="dashboard-arrow">→</span>
+
+    </a>
+
+
+    <!-- Manage Products -->
+    <a href="product.php" class="dashboard-card">
 
       <div class="dashboard-icon">
         🛍️
@@ -46,17 +57,12 @@ include '../layout/header.php';
 
       <div class="dashboard-card-content">
         <h2>Manage Products</h2>
-
-        <p>
-          Manage your store products.
-        </p>
+        <p>Add and edit your store products.</p>
       </div>
 
-      <span class="coming-soon">
-        Coming Soon
-      </span>
+      <span class="dashboard-arrow">→</span>
 
-    </div>
+    </a>
 
 
     <!-- Customers -->
@@ -68,10 +74,7 @@ include '../layout/header.php';
 
       <div class="dashboard-card-content">
         <h2>Customers</h2>
-
-        <p>
-          View and manage customers.
-        </p>
+        <p>View and manage customers.</p>
       </div>
 
       <span class="coming-soon">
