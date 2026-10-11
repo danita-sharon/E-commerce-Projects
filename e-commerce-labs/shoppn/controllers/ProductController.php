@@ -89,12 +89,39 @@ class ProductController {
     return $this->productClass->getAllProducts();
   }
 
+    // FEATURED PRODUCTS
 
+  public function getFeaturedProducts($limit = 6) {
+    return $this->productClass->getFeaturedProducts($limit);
+  }
+
+
+  // GET PRODUCTS BY CATEGORY
+
+  public function getProductsByCategory($cat_id) {
+    return $this->productClass->getProductsByCategory($cat_id);
+  }
+
+
+  // GET PRODUCTS BY BRAND
+
+  public function getProductsByBrand($brand_id) {
+    return $this->productClass->getProductsByBrand($brand_id);
+  }
+  
   // SEARCH PRODUCTS
 
   public function searchProducts($query) {
     return $this->productClass->searchProducts($query);
   }
+
+
+  // DELETE PRODUCT
+
+  public function deleteProduct($id) {
+    return $this->productClass->deleteProduct($id);
+  }
+
 
 }
 ?>

@@ -11,12 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   if ($brandId === false || $brandId <= 0) {
     $_SESSION['error'] = 'Invalid brand.';
-    redirect('/~danita.quarshie/shoppn/views/admin/brand.php');
+    redirect(base_url() . '/views/admin/brand.php');
   }
 
   if ($brandName === '') {
     $_SESSION['error'] = 'Brand name cannot be empty.';
-    redirect('/~danita.quarshie/shoppn/views/admin/brand.php');
+    redirect(base_url() . '/views/admin/brand.php');
   }
 
   $controller = new ProductController();
@@ -28,8 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['error'] = 'Something went wrong. Please try again.';
   }
 
-  redirect('/~danita.quarshie/shoppn/views/admin/brand.php');
+  redirect(base_url() . '/views/admin/brand.php');
 
 } else {
-  redirect('/~danita.quarshie/shoppn/views/admin/brand.php');
+  redirect(base_url() . '/views/admin/brand.php');
 }

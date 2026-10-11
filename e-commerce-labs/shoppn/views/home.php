@@ -3,9 +3,23 @@
 require_once __DIR__ . '/../controllers/ProductController.php';
 
 $controller = new ProductController();
-$products = $controller->getAllProducts();
 
-include 'layout/header.php';
+// Choose products based on the selected category or brand.
+$selectedCat = filter_input(INPUT_GET, 'cat', FILTER_VALIDATE_INT);
+$selectedBrand = filter_input(INPUT_GET, 'brand', FILTER_VALIDATE_INT);
+
+if ($selectedCat !== null && $selectedCat !== false && $selectedCat > 0) {
+    $products = $controller->getProductsByCategory($selectedCat);
+    $sectionTitle = "Products by Category";
+} elseif ($selectedBrand !== null && $selectedBrand !== false && $selectedBrand > 0) {
+    $products = $controller->getProductsByBrand($selectedBrand);
+    $sectionTitle = "Products by Brand";
+} else {
+    $products = $controller->getFeaturedProducts();
+    $sectionTitle = "Featured Products";
+}
+
+include __DIR__ . '/layout/header.php';
 ?>
 
 <main class="home-page">
@@ -24,8 +38,9 @@ include 'layout/header.php';
 
     <section class="admin-dashboard">
 
+      <!-- MANAGE BRANDS -->
       <a
-        href="/~danita.quarshie/shoppn/views/admin/brand.php"
+        href="<?php echo $base_url; ?>/views/admin/brand.php"
         class="admin-dashboard-card"
       >
         <div class="admin-card-icon">🏷️</div>
@@ -34,8 +49,9 @@ include 'layout/header.php';
         <span>Manage Brands →</span>
       </a>
 
+      <!-- MANAGE CATEGORIES -->
       <a
-        href="/~danita.quarshie/shoppn/views/admin/category.php"
+        href="<?php echo $base_url; ?>/views/admin/category.php"
         class="admin-dashboard-card"
       >
         <div class="admin-card-icon">📦</div>
@@ -44,8 +60,9 @@ include 'layout/header.php';
         <span>Manage Categories →</span>
       </a>
 
+      <!-- MANAGE PRODUCTS -->
       <a
-        href="/~danita.quarshie/shoppn/views/admin/product.php"
+        href="<?php echo $base_url; ?>/views/admin/product.php"
         class="admin-dashboard-card"
       >
         <div class="admin-card-icon">🛍️</div>
@@ -58,56 +75,75 @@ include 'layout/header.php';
 
   <?php endif; ?>
 
-  <section class="products-section">
+  <!-- SHOPPING SECTION -->
+  <div class="shop-layout">
 
-    <h2>Our Products</h2>
+    <?php include __DIR__ . '/layout/sidebar.php'; ?>
 
-    <?php if (empty($products)): ?>
+    <section class="products-section">
 
-      <p>No products available yet.</p>
+      <h2>
+        <?php echo htmlspecialchars($sectionTitle, ENT_QUOTES, 'UTF-8'); ?>
+      </h2>
 
-    <?php else: ?>
+      <?php if (empty($products)): ?>
 
-      <div class="products-grid">
+        <p>No products found.</p>
 
-        <?php foreach ($products as $product): ?>
+      <?php else: ?>
 
-          <a
-            class="product-card"
-            href="/~danita.quarshie/shoppn/views/single_product.php?id=<?php echo (int)$product['product_id']; ?>"
-            style="display: block; text-decoration: none; color: inherit;"
-          >
+        <div class="products-grid">
 
-            <img
-              src="/~danita.quarshie/shoppn/images/products/<?php
-                echo htmlspecialchars($product['product_image'], ENT_QUOTES, 'UTF-8');
-              ?>"
-              alt="<?php echo htmlspecialchars($product['product_title'], ENT_QUOTES, 'UTF-8'); ?>"
-              width="200"
-            >
+          <?php foreach ($products as $product): ?>
 
-            <h3>
-              <?php echo htmlspecialchars($product['product_title'], ENT_QUOTES, 'UTF-8'); ?>
-            </h3>
+            <div class="product-card">
 
-            <p>
-              GH₵ <?php echo number_format((float)$product['product_price'], 2); ?>
-            </p>
+              <!-- PRODUCT IMAGE -->
+              <img
+                src="<?php echo $base_url; ?>/images/products/<?php
+                  echo rawurlencode($product['product_image']);
+                ?>"
+                alt="<?php echo htmlspecialchars($product['product_title'], ENT_QUOTES, 'UTF-8'); ?>"
+                width="200"
+              >
 
-            <p>
-              <?php echo htmlspecialchars($product['cat_name'] ?? '', ENT_QUOTES, 'UTF-8'); ?>
-            </p>
+              <!-- PRODUCT TITLE -->
+              <h3>
+                <?php echo htmlspecialchars($product['product_title'], ENT_QUOTES, 'UTF-8'); ?>
+              </h3>
 
-          </a>
+              <!-- PRODUCT PRICE -->
+              <p>
+                GH₵ <?php echo number_format((float)$product['product_price'], 2); ?>
+              </p>
 
-        <?php endforeach; ?>
+              <!-- PRODUCT CATEGORY -->
+              <p>
+                <?php echo htmlspecialchars($product['cat_name'] ?? '', ENT_QUOTES, 'UTF-8'); ?>
+              </p>
 
-      </div>
+              <!-- PRODUCT DETAILS -->
+              <a href="<?php echo $base_url; ?>/views/single_product.php?pro_id=<?php echo (int)$product['product_id']; ?>">
+                Details
+              </a>
 
-    <?php endif; ?>
+              <!-- ADD TO CART -->
+              <a href="<?php echo $base_url; ?>/index.php?add_cart=<?php echo (int)$product['product_id']; ?>">
+                Add to Cart
+              </a>
 
-  </section>
+            </div>
+
+          <?php endforeach; ?>
+
+        </div>
+
+      <?php endif; ?>
+
+    </section>
+
+  </div>
 
 </main>
 
-<?php include 'layout/footer.php'; ?>
+<?php include __DIR__ . '/layout/footer.php'; ?>

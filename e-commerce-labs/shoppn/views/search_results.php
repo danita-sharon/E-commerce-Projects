@@ -1,29 +1,34 @@
-
 <?php
 require_once __DIR__ . '/../core/core.php';
 require_once __DIR__ . '/../controllers/ProductController.php';
 
 $controller = new ProductController();
 
-$query = trim($_GET['q'] ?? '');
+// Get the search query from the URL
+$query = trim($_GET['user_query'] ?? '');
+
 $products = [];
 
 if ($query !== '') {
     $products = $controller->searchProducts($query);
 }
 
-include 'layout/header.php';
+include __DIR__ . '/layout/header.php';
 ?>
 
 <main class="home-page">
 
   <section class="home-welcome">
+
     <h1>Search Results</h1>
 
-    <p>
-      Results for:
-      <?php echo htmlspecialchars($query, ENT_QUOTES, 'UTF-8'); ?>
-    </p>
+    <?php if ($query !== ''): ?>
+      <p>
+        Results for:
+        <?php echo htmlspecialchars($query, ENT_QUOTES, 'UTF-8'); ?>
+      </p>
+    <?php endif; ?>
+
   </section>
 
   <section class="products-section">
@@ -42,15 +47,11 @@ include 'layout/header.php';
 
         <?php foreach ($products as $product): ?>
 
-          <a
-            class="product-card"
-            href="/~danita.quarshie/shoppn/views/single_product.php?id=<?php echo (int)$product['product_id']; ?>"
-            style="display: block; text-decoration: none; color: inherit;"
-          >
+          <div class="product-card">
 
             <img
-              src="/~danita.quarshie/shoppn/images/products/<?php
-                echo htmlspecialchars($product['product_image'], ENT_QUOTES, 'UTF-8');
+              src="<?php echo base_url(); ?>/images/products/<?php
+                echo rawurlencode($product['product_image']);
               ?>"
               alt="<?php echo htmlspecialchars($product['product_title'], ENT_QUOTES, 'UTF-8'); ?>"
               width="200"
@@ -64,7 +65,19 @@ include 'layout/header.php';
               GH₵ <?php echo number_format((float)$product['product_price'], 2); ?>
             </p>
 
-          </a>
+            <p>
+              <?php echo htmlspecialchars($product['cat_name'] ?? '', ENT_QUOTES, 'UTF-8'); ?>
+            </p>
+
+            <a href="<?php echo base_url(); ?>/views/single_product.php?pro_id=<?php echo (int)$product['product_id']; ?>">
+              Details
+            </a>
+
+            <a href="<?php echo base_url(); ?>/index.php?add_cart=<?php echo (int)$product['product_id']; ?>">
+              Add to Cart
+            </a>
+
+          </div>
 
         <?php endforeach; ?>
 
@@ -76,4 +89,4 @@ include 'layout/header.php';
 
 </main>
 
-<?php include 'layout/footer.php'; ?>
+<?php include __DIR__ . '/layout/footer.php'; ?>

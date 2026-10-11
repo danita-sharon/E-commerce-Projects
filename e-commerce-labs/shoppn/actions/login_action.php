@@ -1,30 +1,32 @@
+
 <?php
 require_once '../core/core.php';
 require_once '../controllers/CustomerController.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-  $email = trim(strip_tags($_POST['email']));
-  $pass = $_POST['pass'];
+    $email = trim(strip_tags($_POST['email']));
+    $pass = $_POST['pass'];
 
-  $controller = new CustomerController();
-  $result = $controller->login($email, $pass);
+    $controller = new CustomerController();
+    $result = $controller->login($email, $pass);
 
-  if ($result['success']) {
-    $customer = $result['customer'];
+    if ($result['success']) {
+        $customer = $result['customer'];
 
-    $_SESSION['customer_id'] = $customer['customer_id'];
-    $_SESSION['customer_name'] = $customer['customer_name'];
-    $_SESSION['customer_email'] = $customer['customer_email'];
-    $_SESSION['user_role'] = $customer['user_role'];
+        $_SESSION['customer_id'] = $customer['customer_id'];
+        $_SESSION['customer_name'] = $customer['customer_name'];
+        $_SESSION['customer_email'] = $customer['customer_email'];
+        $_SESSION['user_role'] = $customer['user_role'];
 
-    redirect('/shoppn/index.php');
-  } else {
-    $_SESSION['error'] = $result['error'];
-    redirect('/shoppn/views/login.php');
-  }
+        redirect(base_url() . '/index.php');
+
+    } else {
+        $_SESSION['error'] = $result['error'];
+        redirect(base_url() . '/views/login.php');
+    }
 
 } else {
-  redirect('/shoppn/views/login.php');
+    redirect(base_url() . '/views/login.php');
 }
 ?>

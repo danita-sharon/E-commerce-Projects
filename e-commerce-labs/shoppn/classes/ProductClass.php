@@ -63,8 +63,7 @@ class ProductClass extends Database {
     $stmt = $this->conn->prepare($sql);
     $stmt->bind_param("i", $id);
     $stmt->execute();
-    $result = $stmt->get_result();
-    return $result->fetch_assoc();
+    return $stmt->get_result()->fetch_assoc();
   }
 
   public function updateCategory($id, $name) {
@@ -145,8 +144,7 @@ class ProductClass extends Database {
     $stmt->bind_param("i", $id);
     $stmt->execute();
 
-    $result = $stmt->get_result();
-    return $result->fetch_assoc();
+    return $stmt->get_result()->fetch_assoc();
   }
 
   public function getAllProducts() {
@@ -157,8 +155,59 @@ class ProductClass extends Database {
             ORDER BY p.product_id DESC";
 
     $result = $this->conn->query($sql);
-
     return $result->fetch_all(MYSQLI_ASSOC);
+  }
+
+
+  // FEATURED PRODUCTS
+
+  public function getFeaturedProducts($limit = 6) {
+    $sql = "SELECT p.*, c.cat_name, b.brand_name
+            FROM products p
+            LEFT JOIN categories c ON p.product_cat = c.cat_id
+            LEFT JOIN brands b ON p.product_brand = b.brand_id
+            ORDER BY RAND()
+            LIMIT ?";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $limit);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+  }
+
+
+  // GET PRODUCTS BY CATEGORY
+
+  public function getProductsByCategory($cat_id) {
+    $sql = "SELECT p.*, c.cat_name, b.brand_name
+            FROM products p
+            LEFT JOIN categories c ON p.product_cat = c.cat_id
+            LEFT JOIN brands b ON p.product_brand = b.brand_id
+            WHERE p.product_cat = ?";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $cat_id);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+  }
+
+
+  // GET PRODUCTS BY BRAND
+
+  public function getProductsByBrand($brand_id) {
+    $sql = "SELECT p.*, c.cat_name, b.brand_name
+            FROM products p
+            LEFT JOIN categories c ON p.product_cat = c.cat_id
+            LEFT JOIN brands b ON p.product_brand = b.brand_id
+            WHERE p.product_brand = ?";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $brand_id);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
   }
 
 
@@ -179,9 +228,23 @@ class ProductClass extends Database {
     $stmt->bind_param("ss", $searchTerm, $searchTerm);
     $stmt->execute();
 
-    $result = $stmt->get_result();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+  }
 
-    return $result->fetch_all(MYSQLI_ASSOC);
+
+  // DELETE PRODUCT
+
+  public function deleteProduct($id) {
+    $sql = "DELETE FROM products WHERE product_id = ?";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+
+    if (!$stmt->execute()) {
+      return false;
+    }
+
+    return $stmt->affected_rows > 0;
   }
 
 }

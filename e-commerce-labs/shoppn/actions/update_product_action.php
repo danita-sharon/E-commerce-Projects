@@ -4,7 +4,7 @@ require_once '../controllers/ProductController.php';
 
 require_admin();
 
-$redirectUrl = '/~danita.quarshie/shoppn/views/admin/product.php';
+$redirectUrl = base_url() . '/views/admin/product.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   redirect($redirectUrl);

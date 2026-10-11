@@ -5,14 +5,14 @@ require_once '../controllers/ProductController.php';
 require_admin();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-  redirect('/~danita.quarshie/shoppn/views/admin/brand.php');
+  redirect(base_url() . '/views/admin/brand.php');
 }
 
 $brandId = filter_var($_POST['brand_id'] ?? null, FILTER_VALIDATE_INT);
 
 if ($brandId === false || $brandId <= 0) {
   $_SESSION['error'] = 'Invalid brand.';
-  redirect('/~danita.quarshie/shoppn/views/admin/brand.php');
+  redirect(base_url() . '/views/admin/brand.php');
 }
 
 $controller = new ProductController();
@@ -24,4 +24,4 @@ if ($deleted) {
   $_SESSION['error'] = 'Something went wrong. Please try again.';
 }
 
-redirect('/~danita.quarshie/shoppn/views/admin/brand.php');
+redirect(base_url() . '/views/admin/brand.php');

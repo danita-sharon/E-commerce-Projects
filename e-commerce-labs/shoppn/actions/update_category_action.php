@@ -11,12 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   if ($categoryId === false || $categoryId <= 0) {
     $_SESSION['error'] = 'Invalid category.';
-    redirect('/~danita.quarshie/shoppn/views/admin/category.php');
+    redirect(base_url() . '/views/admin/category.php');
   }
 
   if ($categoryName === '') {
     $_SESSION['error'] = 'Category name cannot be empty.';
-    redirect('/~danita.quarshie/shoppn/views/admin/category.php');
+    redirect(base_url() . '/views/admin/category.php');
   }
 
   $controller = new ProductController();
@@ -28,8 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['error'] = 'Something went wrong. Please try again.';
   }
 
-  redirect('/~danita.quarshie/shoppn/views/admin/category.php');
+  redirect(base_url() . '/views/admin/category.php');
 
 } else {
-  redirect('/~danita.quarshie/shoppn/views/admin/category.php');
+  redirect(base_url() . '/views/admin/category.php');
 }
