@@ -1337,3 +1337,154 @@ main.home-page .product-card a:hover {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* TASK 11 — SHOPPING CART SUMMARY */
+
+.cart-summary {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 12px 20px;
+    background: #fff8fb;
+    border-bottom: 1px solid #f2d5df;
+    color: #51464b;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.cart-summary a {
+    color: #b94f70;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.cart-summary a:hover {
+    text-decoration: underline;
+}
+
+
+/* TASKS 11 & 12 — SHOPPING CART */
+
+.cart-page {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.cart-page h1 {
+    color: #b94f70;
+    margin-bottom: 25px;
+}
+
+.cart-message {
+    background: #fff0f5;
+    border: 1px solid #efc7d5;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.cart-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.cart-table th,
+.cart-table td {
+    padding: 15px;
+    border-bottom: 1px solid #f0dbe3;
+    text-align: left;
+}
+
+.cart-table th {
+    background: #fff0f5;
+    color: #9f4261;
+}
+
+.cart-product {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.cart-product img {
+    width: 75px;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.cart-quantity {
+    width: 75px;
+    padding: 8px;
+    border: 1px solid #e6bdcb;
+    border-radius: 6px;
+}
+
+.cart-total {
+    text-align: right;
+    margin-top: 25px;
+    color: #9f4261;
+}
+
+.cart-actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.cart-btn {
+    display: inline-block;
+    background: #b94f70;
+    color: white;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cart-btn:hover {
+    background: #973e5b;
+    color: white;
+}
+
+.cart-btn-danger {
+    background: #b34b57;
+}
+
+.cart-btn-danger:hover {
+    background: #922f3b;
+}
+
+.cart-btn-secondary {
+    background: #6f6470;
+}
+
+.cart-btn-secondary:hover {
+    background: #514750;
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 50px 20px;
+    background: #fff8fb;
+    border-radius: 12px;
+}
+
+.empty-cart p {
+    margin-bottom: 20px;
+}

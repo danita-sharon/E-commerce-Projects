@@ -127,10 +127,12 @@ include __DIR__ . '/layout/header.php';
                 Details
               </a>
 
+              
               <!-- ADD TO CART -->
-              <a href="<?php echo $base_url; ?>/index.php?add_cart=<?php echo (int)$product['product_id']; ?>">
-                Add to Cart
+              <a href="<?php echo $base_url; ?>/actions/add_to_cart_action.php?add_cart=<?php echo (int)$product['product_id']; ?>">
+              Add to Cart
               </a>
+
 
             </div>
 

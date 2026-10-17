@@ -1,12 +1,16 @@
-
 <?php
-// Automatically detect whether Shoppn is running locally or on the school server.
-$base_url = '/shoppn';
+require_once __DIR__ . '/../../core/core.php';
+require_once __DIR__ . '/../../controllers/CartController.php';
 
-if (strpos($_SERVER['SCRIPT_NAME'], '/~danita.quarshie/shoppn/') !== false) {
-    $base_url = '/~danita.quarshie/shoppn';
-}
+$base_url = base_url();
+
+$cartController = new CartController();
+$ip = get_ip();
+
+$cartCount = $cartController->getCartCount($ip);
+$cartTotal = $cartController->getCartTotal($ip);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -71,4 +75,17 @@ if (strpos($_SERVER['SCRIPT_NAME'], '/~danita.quarshie/shoppn/') !== false) {
         <?php endif; ?>
 
     </nav>
+
+
+<div class="cart-summary">
+    <span>🛒 Shopping Cart — Total Items:
+        <?php echo $cartCount; ?>
+        | Total Price: GH₵
+        <?php echo number_format($cartTotal, 2); ?>
+    </span>
+
+    <a href="<?php echo $base_url; ?>/views/cart.php">
+        Go to Cart →
+    </a>
+</div>
 </header>

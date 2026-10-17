@@ -6,13 +6,24 @@ date_default_timezone_set('Africa/Accra');
 require_once 'db_class.php';
 
 // Automatically detect localhost or school server.
+
 function base_url() {
-    if (strpos($_SERVER['SCRIPT_NAME'], '/~danita.quarshie/shoppn/') !== false) {
+    $script = $_SERVER['SCRIPT_NAME'] ?? '';
+
+    // School server
+    if (strpos($script, '/~danita.quarshie/shoppn/') !== false) {
         return '/~danita.quarshie/shoppn';
     }
 
+    // GitHub project running on localhost
+    if (strpos($script, '/E-commerce-Projects/e-commerce-labs/shoppn/') !== false) {
+        return '/E-commerce-Projects/e-commerce-labs/shoppn';
+    }
+
+    // Original localhost project
     return '/shoppn';
 }
+
 
 // Redirect to another page.
 function redirect($url) {
@@ -43,4 +54,13 @@ function require_admin() {
         redirect(base_url() . '/index.php');
     }
 }
+
+
+/**
+ * Get the visitor's IP address for their shopping cart.
+ */
+function get_ip() {
+    return $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+}
+
 ?>
