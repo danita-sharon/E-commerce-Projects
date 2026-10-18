@@ -161,19 +161,15 @@ class ProductClass extends Database {
 
   // FEATURED PRODUCTS
 
-  public function getFeaturedProducts($limit = 6) {
+  public function getFeaturedProducts() {
     $sql = "SELECT p.*, c.cat_name, b.brand_name
             FROM products p
             LEFT JOIN categories c ON p.product_cat = c.cat_id
             LEFT JOIN brands b ON p.product_brand = b.brand_id
-            ORDER BY RAND()
-            LIMIT ?";
+            ORDER BY p.product_id DESC";
 
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("i", $limit);
-    $stmt->execute();
-
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    $result = $this->conn->query($sql);
+    return $result->fetch_all(MYSQLI_ASSOC);
   }
 
 
