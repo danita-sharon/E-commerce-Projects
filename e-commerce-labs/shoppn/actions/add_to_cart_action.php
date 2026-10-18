@@ -36,6 +36,15 @@ if ($cartController->addToCart($product_id, $qty, $ip, $customer_id)) {
     $_SESSION['cart_message'] = 'Unable to add product to cart.';
 }
 
-// Return to the shopping page.
+// Return to the referring shopping page when available.
+$referrer = $_SERVER['HTTP_REFERER'] ?? '';
+$referrer_host = parse_url($referrer, PHP_URL_HOST);
+$current_host = $_SERVER['SERVER_NAME'] ?? '';
+
+if ($referrer !== '' && $referrer_host === $current_host) {
+    redirect($referrer);
+}
+
+// Fallback to homepage.
 redirect($base_url . '/index.php');
 ?>
