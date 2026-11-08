@@ -45,5 +45,20 @@ class CartController {
         return $this->cart->updateQty($product_id, $new_qty, $ip);
     }
 
+    // Save a successful, verified payment
+    public function processPayment($customer_id, $ip, $reference, $amount) {
+        return $this->cart->processPayment(
+            $customer_id,
+            $ip,
+            $reference,
+            $amount
+        );
+    }
+
+    // Get order details for the invoice
+    public function getOrderById($order_id) {
+        return $this->cart->getOrderById($order_id);
+    }
+
 }
 ?>

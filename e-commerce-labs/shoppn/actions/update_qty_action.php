@@ -31,5 +31,14 @@ if (is_array($product_ids) && is_array($quantities)) {
 
 $_SESSION['cart_message'] = 'Cart quantities updated successfully.';
 
-redirect(base_url() . '/views/cart.php');
+$referrer = $_SERVER['HTTP_REFERER'] ?? '';
+
+if (
+    $referrer !== '' &&
+    parse_url($referrer, PHP_URL_HOST) === ($_SERVER['HTTP_HOST'] ?? '')
+) {
+    redirect($referrer);
+}
+
+redirect($base_url . '/index.php');
 ?>

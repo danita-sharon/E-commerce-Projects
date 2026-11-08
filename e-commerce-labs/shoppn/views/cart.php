@@ -155,7 +155,7 @@ include __DIR__ . '/layout/header.php';
                 Continue Shopping
             </a>
 
-            <a href="<?php echo $base_url; ?>/views/checkout.php"
+            <a href="<?php echo $base_url; ?>/views/payment.php"
                class="cart-btn">
                 Checkout
             </a>

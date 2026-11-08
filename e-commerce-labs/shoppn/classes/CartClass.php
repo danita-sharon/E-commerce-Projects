@@ -1,4 +1,3 @@
-
 <?php
 require_once __DIR__ . '/../core/db_class.php';
 
@@ -87,10 +86,112 @@ class CartClass extends Database {
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("iis", $new_qty, $product_id, $ip);
 
+        
         return $stmt->execute();
     }
 
+    // Save a verified payment as an order
+    public function processPayment($customer_id, $ip, $reference, $amount) {
+        $this->conn->begin_transaction();
 
+        try {
+            $items = $this->getCartItems($ip);
+
+            if (empty($items)) {
+                throw new Exception("Your cart is empty.");
+            }
+
+            $total = $this->getCartTotal($ip);
+
+            if (round($total * 100) !== round($amount * 100)) {
+                throw new Exception("Payment amount does not match cart total.");
+            }
+
+            $invoice_no = mt_rand(100000, 999999);
+
+            $sql = "INSERT INTO orders
+                    (customer_id, invoice_no, order_date,
+                     order_status, created_at, payment_reference)
+                    VALUES (?, ?, CURDATE(), 'paid', NOW(), ?)";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("iis", $customer_id, $invoice_no, $reference);
+
+            if (!$stmt->execute()) {
+                throw new Exception("Could not create order.");
+            }
+
+            $order_id = $this->conn->insert_id;
+            $stmt->close();
+
+            $sql = "INSERT INTO orderdetails
+                    (order_id, product_id, qty)
+                    VALUES (?, ?, ?)";
+
+            $stmt = $this->conn->prepare($sql);
+
+            foreach ($items as $item) {
+                $product_id = (int) $item['p_id'];
+                $qty = (int) $item['qty'];
+
+                $stmt->bind_param("iii", $order_id, $product_id, $qty);
+
+                if (!$stmt->execute()) {
+                    throw new Exception("Could not save order products.");
+                }
+            }
+
+            $stmt->close();
+
+            $sql = "DELETE FROM cart WHERE ip_add = ?";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("s", $ip);
+
+            if (!$stmt->execute()) {
+                throw new Exception("Could not clear cart.");
+            }
+
+            $stmt->close();
+
+            $this->conn->commit();
+            return $order_id;
+
+        } catch (Throwable $e) {
+            $this->conn->rollback();
+            error_log("Payment processing error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    // Retrieve order details for the invoice
+    public function getOrderById($order_id) {
+        $sql = "SELECT
+                    o.order_id,
+                    o.customer_id,
+                    o.invoice_no,
+                    o.order_date,
+                    o.order_status,
+                    o.payment_reference,
+                    od.product_id,
+                    od.qty,
+                    p.product_title,
+                    p.product_price
+                FROM orders o
+                JOIN orderdetails od
+                    ON o.order_id = od.order_id
+                JOIN products p
+                    ON od.product_id = p.product_id
+                WHERE o.order_id = ?";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $order_id);
+        $stmt->execute();
+
+        $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        return $result;
+    }
 
 }
 ?>
