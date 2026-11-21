@@ -1,0 +1,9 @@
+# Private settings (passwords and Paystack secret key) - never upload to GitHub
+config/config.php
+
+# Product photos uploaded through the admin dashboard
+uploads/*
+!uploads/.gitkeep
+
+# Mac system files
+.DS_Store
