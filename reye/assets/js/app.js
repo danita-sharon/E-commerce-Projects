@@ -103,7 +103,7 @@ document.addEventListener('click', async (e) => {
     swatch.classList.add('on');
     $('.swatch-name', card).textContent = swatch.dataset.name;
     const photo = $('.card-photo', card);
-    const name = $('.card-title a', card).textContent;
+    const name = card.dataset.name;
     photo.innerHTML = swatch.dataset.image
       ? `<img src="${esc(swatch.dataset.image)}" alt="${esc(name + ' in ' + swatch.dataset.name)}">`
       : productArt(card.dataset.type, swatch.dataset.main, swatch.dataset.accent);
@@ -125,23 +125,32 @@ document.addEventListener('click', async (e) => {
     const chosenSize = $('.size.on', card);
     if (!chosenSize) { $('.error-text', card).classList.add('show'); return; }
     const chosenColour = $('.swatch.on', card);
+    const qtyEl = $('.qty-input', card);
     addBtn.disabled = true;
     const res = await post('api/cart.php', {
       action: 'add',
       product_id: card.dataset.id,
       colour_id: chosenColour ? chosenColour.dataset.colour : 0,
       size: chosenSize.dataset.size,
-      qty: 1,
+      qty: qtyEl ? qtyEl.textContent : 1,
     });
     addBtn.disabled = false;
     if (res.ok) {
       $('#bagCount').textContent = res.count;
       addBtn.textContent = 'Added';
       setTimeout(() => (addBtn.textContent = 'Add to bag'), 1400);
-      toast(`${$('.card-title a', card).textContent} added to your bag`);
+      toast(res.message);
     } else {
       toast(res.message || "Couldn't add to bag. Try again.");
     }
+    return;
+  }
+
+  // Quantity on the product page
+  const step = e.target.closest('.qty-step');
+  if (step && card) {
+    const el = $('.qty-input', card);
+    el.textContent = Math.min(10, Math.max(1, Number(el.textContent) + Number(step.dataset.step)));
     return;
   }
 
@@ -255,4 +264,50 @@ if ('IntersectionObserver' in window) {
   $$('.reveal').forEach(el => io.observe(el));
 } else {
   $$('.reveal').forEach(el => el.classList.add('visible'));
+}
+
+/* ---------- Bag page: change quantity or remove ---------- */
+const bagLines = $('#bagLines');
+if (bagLines) {
+  const updateFreeBar = (subtotal) => {
+    const bar = $('.free-bar');
+    if (!bar) return;
+    const target = Number(bar.dataset.free);
+    const left = Math.max(0, target - subtotal);
+    $('#freeFill').style.width = Math.min(100, Math.round(subtotal / target * 100)) + '%';
+    $('#freeText').textContent = left > 0
+      ? `You're GH₵ ${left.toLocaleString('en-GH', { minimumFractionDigits: 2 })} away from free delivery in Accra.`
+      : "You've unlocked free delivery in Accra.";
+  };
+
+  bagLines.addEventListener('click', async (e) => {
+    const line = e.target.closest('.bag-line');
+    if (!line) return;
+    const key = line.dataset.key;
+    let res;
+
+    const stepBtn = e.target.closest('.qty-btn');
+    if (stepBtn) {
+      const qty = Number($('.qty-val', line).textContent) + Number(stepBtn.dataset.step);
+      res = await post('api/cart.php', { action: 'update', key, qty });
+      if (res.ok && qty >= 1) $('.qty-val', line).textContent = qty;
+    } else if (e.target.closest('.remove-btn')) {
+      res = await post('api/cart.php', { action: 'remove', key });
+    } else {
+      return;
+    }
+
+    if (!res.ok) { toast(res.message); return; }
+    if (!res.lines[key]) {
+      line.style.opacity = 0;
+      setTimeout(() => line.remove(), 250);
+      if (res.count === 0) setTimeout(() => location.reload(), 300);
+    } else {
+      $('.line-total', line).textContent = res.lines[key];
+    }
+    $('#bagCount').textContent = res.count;
+    $('#bagSubtotal').textContent = res.subtotal;
+    updateFreeBar(res.subtotal_raw);
+    if (res.message) toast(res.message);
+  });
 }

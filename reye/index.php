@@ -56,14 +56,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <p class="sub-note">Pick a colour and size, then add to bag. <button class="link-btn" id="sizeGuideBtn">Size guide</button></p>
 
-    <div class="size-guide" id="sizeGuide">
-      <table>
-        <tr><th>EU</th><td>40</td><td>41</td><td>42</td><td>43</td><td>44</td><td>45</td></tr>
-        <tr><th>UK</th><td>6.5</td><td>7</td><td>8</td><td>9</td><td>9.5</td><td>10.5</td></tr>
-        <tr><th>Foot (cm)</th><td>25.4</td><td>26</td><td>26.7</td><td>27.3</td><td>28</td><td>28.6</td></tr>
-      </table>
-      <p style="color:var(--muted);margin:10px 0 0">Between sizes? Go up one, or <a href="<?= url('bespoke.php') ?>" style="text-decoration:underline">order bespoke</a> for a perfect fit.</p>
-    </div>
+    <?php require __DIR__ . '/includes/size_guide.php'; ?>
 
     <div class="grid" id="productGrid">
       <?php foreach ($products as $p) { product_card($p, $saved); } ?>
