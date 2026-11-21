@@ -1,0 +1,313 @@
+/* =========================================================
+   REYE - Main stylesheet
+   Colours, fonts and layout for the whole site
+   ========================================================= */
+
+/* ---------- 1. Brand colours and fonts ---------- */
+:root {
+  --ink: #1a1714;          /* near-black: text, buttons, logo */
+  --cream: #f6f3ee;        /* page background */
+  --sand: #ebe8e3;         /* product photo background */
+  --stone: #c8c5bf;        /* hero background */
+  --clay: #e7e1d6;         /* philosophy panel */
+  --line: #e2ddd4;         /* thin borders */
+  --muted: #8a8379;        /* secondary text */
+  --body: #5f5950;         /* paragraph text */
+  --gold: #c9a24b;         /* accent only */
+  --gold-dark: #b8913f;
+  --danger: #a32d2d;
+  --success: #0f6e56;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+  --wrap: 1240px;
+}
+
+/* ---------- 2. Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; color: inherit; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 24px; }
+.serif { font-family: var(--serif); }
+.label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.logo { fill: var(--ink); display: block; }
+
+/* ---------- 3. Buttons and form fields ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--ink); color: var(--cream);
+  border: 1px solid var(--ink); border-radius: 2px;
+  padding: 12px 22px; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+  cursor: pointer; transition: opacity .2s, background .2s;
+}
+.btn:hover { opacity: .85; }
+.btn-outline { background: transparent; color: var(--ink); }
+.btn-outline:hover { background: var(--ink); color: var(--cream); opacity: 1; }
+.btn-gold { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+.btn-block { width: 100%; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.field { display: block; margin-bottom: 14px; }
+.field span { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+.input {
+  width: 100%; height: 44px; padding: 0 12px;
+  background: #fff; border: 1px solid var(--line); border-radius: 2px;
+  outline: none; transition: border-color .2s;
+}
+textarea.input { height: auto; padding: 10px 12px; }
+.input:focus { border-color: var(--ink); }
+.error-text { color: var(--danger); font-size: 13px; margin: 4px 0 0; }
+
+/* ---------- 4. Announcement bar ---------- */
+.announce {
+  background: var(--ink); color: #d9cfb8;
+  font-size: 11px; letter-spacing: 1.5px; text-align: center; padding: 8px 12px;
+  transition: opacity .3s;
+}
+
+/* ---------- 5. Header ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(246, 243, 238, .96);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--line);
+}
+.nav {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  height: 72px;
+}
+.nav-left { display: flex; align-items: center; }
+.nav-links { display: flex; gap: 24px; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; }
+.nav-links a { padding: 4px 0; border-bottom: 1px solid transparent; }
+.nav-links a:hover, .nav-links a.active { border-color: var(--ink); }
+.nav-logo .logo { width: 40px; height: 49px; }
+.nav-icons { display: flex; justify-content: flex-end; align-items: center; gap: 18px; font-size: 12px; letter-spacing: 1.5px; }
+.nav-icons button { background: none; border: 0; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+.nav-icons .ti { font-size: 20px; }
+.menu-btn { display: none !important; }
+
+/* Search panel under the header */
+.search-panel { display: none; border-top: 1px solid var(--line); background: #fff; padding: 16px 0; }
+.search-panel.open { display: block; }
+.search-results { margin-top: 10px; font-size: 14px; }
+.search-results a { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0ede8; }
+.search-results a:hover { color: var(--gold-dark); }
+.search-results .muted { color: var(--muted); }
+
+/* Mobile menu */
+.mobile-menu { display: none; border-top: 1px solid var(--line); padding: 12px 24px 18px; }
+.mobile-menu.open { display: block; }
+.mobile-menu a { display: block; padding: 10px 0; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; border-bottom: 1px solid var(--line); }
+
+/* ---------- 6. Flash messages and toast ---------- */
+.flash { padding: 12px 24px; font-size: 14px; text-align: center; }
+.flash-success { background: #e1f5ee; color: var(--success); }
+.flash-error { background: #fcebeb; color: var(--danger); }
+.toast {
+  position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 20px);
+  background: var(--ink); color: var(--cream); font-size: 13px;
+  padding: 12px 20px; border-radius: 2px; opacity: 0; pointer-events: none;
+  transition: opacity .25s, transform .25s; z-index: 100;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------- 7. Hero ---------- */
+.hero {
+  position: relative; overflow: hidden;
+  background: var(--stone);
+  min-height: 640px; display: flex; align-items: flex-start; justify-content: center;
+  text-align: center;
+}
+.hero-text { position: relative; z-index: 2; padding-top: 72px; }
+.hero .label { color: #4a4540; }
+.hero h1 {
+  font-family: var(--serif); font-weight: 300; color: #fbf9f5;
+  font-size: clamp(44px, 7vw, 92px); line-height: 1; margin: 0;
+  letter-spacing: 6px;
+}
+.hero h1 em { display: block; font-style: italic; letter-spacing: 1px; margin-top: 6px; }
+.hero .btn { margin-top: 30px; }
+.hero-art {
+  position: absolute; left: 50%; bottom: -70px; transform: translateX(-50%);
+  width: min(620px, 100%); z-index: 1; pointer-events: none;
+}
+.hero-art img { width: 100%; }
+
+/* ---------- 8. Trust strip ---------- */
+.trust {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--line); text-align: center;
+  font-size: 12px; letter-spacing: 1px; color: var(--body);
+}
+.trust div { padding: 16px 8px; }
+.trust .ti { font-size: 16px; vertical-align: -2px; margin-right: 4px; }
+
+/* ---------- 9. Section headings and shop toolbar ---------- */
+.section { padding: 64px 0; }
+.section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
+.section-head h2 { font-family: var(--serif); font-weight: 400; font-size: 38px; margin: 0; line-height: 1.1; }
+.toolbar { display: flex; align-items: center; gap: 18px; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; }
+.filters { display: flex; gap: 16px; }
+.filters button { background: none; border: 0; border-bottom: 1px solid transparent; padding: 2px 0; cursor: pointer; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; font-size: 12px; }
+.filters button.active { color: var(--ink); border-color: var(--ink); }
+.sort { height: 34px; border: 1px solid var(--line); background: #fff; padding: 0 8px; font-size: 12px; }
+.sub-note { font-size: 13px; color: var(--muted); margin: 0 0 24px; }
+.link-btn { background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; color: var(--ink); font-size: 13px; }
+
+/* Size guide */
+.size-guide { display: none; background: #fff; border: 1px solid var(--line); padding: 18px; margin-bottom: 24px; font-size: 13px; }
+.size-guide.open { display: block; }
+.size-guide table { width: 100%; border-collapse: collapse; text-align: center; }
+.size-guide th, .size-guide td { padding: 6px; border-bottom: 1px solid #f0ede8; }
+.size-guide th { color: var(--muted); font-weight: 400; text-align: left; }
+
+/* ---------- 10. Product cards ---------- */
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px 20px; }
+.card-media {
+  position: relative; background: var(--sand); aspect-ratio: 1 / 1;
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.card-photo { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+.card-media img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+.card:hover .card-media img { transform: scale(1.04); }
+.card-media svg.art { width: 62%; height: auto; transition: transform .5s; }
+.card:hover .card-media svg.art { transform: scale(1.05) rotate(-2deg); }
+.badge {
+  position: absolute; top: 12px; left: 12px; z-index: 2;
+  background: var(--ink); color: var(--cream);
+  font-size: 10px; letter-spacing: 1px; padding: 4px 8px;
+}
+.badge.low { background: #7a2a22; }
+.wish-btn {
+  position: absolute; top: 10px; right: 10px; z-index: 2;
+  width: 34px; height: 34px; border-radius: 50%; border: 0;
+  background: rgba(255,255,255,.8); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--body); font-size: 17px; transition: color .2s, transform .2s;
+}
+.wish-btn:hover { transform: scale(1.08); }
+.wish-btn.on { color: #7a2a22; }
+.card-body { padding: 14px 2px 0; }
+.card-title { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; }
+.card-title a:hover { text-decoration: underline; }
+.swatches { display: flex; align-items: center; gap: 8px; margin: 10px 0; }
+.swatch {
+  width: 16px; height: 16px; border-radius: 50%; padding: 0; cursor: pointer;
+  border: 2px solid var(--cream); outline: 1px solid #bdb7ad;
+}
+.swatch.on { outline: 1.5px solid var(--ink); }
+.swatch-name { font-size: 12px; color: var(--muted); margin-left: 2px; }
+.sizes { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.size {
+  min-width: 34px; padding: 5px 8px; font-size: 12px; cursor: pointer;
+  background: transparent; border: 1px solid #cfc9bf; border-radius: 2px;
+}
+.size:hover { border-color: var(--ink); }
+.size.on { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+.card .error-text { display: none; margin: 0 0 8px; }
+.card .error-text.show { display: block; }
+.empty-note { grid-column: 1 / -1; color: var(--muted); font-size: 14px; }
+
+/* ---------- 11. Philosophy and process ---------- */
+.split { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); }
+.split-text { padding: 64px 48px 64px 0; }
+.split-text h2 { font-family: var(--serif); font-weight: 400; font-size: 42px; line-height: 1.1; margin: 0 0 16px; }
+.split-text h2 em { display: block; }
+.split-text p { color: var(--body); max-width: 420px; margin: 0 0 24px; }
+.process { background: var(--clay); display: flex; align-items: center; justify-content: center; gap: 28px; padding: 40px; }
+.step { text-align: center; }
+.step-icon {
+  width: 96px; height: 96px; border-radius: 50%; background: #d6cdbd;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;
+  color: #6b5a3c; font-size: 30px;
+}
+.step-icon .logo { width: 34px; height: 42px; }
+.step.final .step-icon { background: var(--cream); border: 1px solid var(--ink); }
+
+/* ---------- 12. Bespoke banner ---------- */
+.bespoke { background: var(--ink); color: var(--cream); }
+.bespoke .wrap { display: grid; grid-template-columns: 1.4fr 1fr; align-items: center; gap: 24px; padding-top: 56px; padding-bottom: 56px; }
+.bespoke .label { color: var(--gold); }
+.bespoke h2 { font-family: var(--serif); font-weight: 400; font-size: 38px; margin: 0 0 8px; line-height: 1.1; }
+.bespoke p { color: #a9a196; margin: 0; max-width: 480px; }
+.bespoke-cta { text-align: right; }
+
+/* ---------- 13. Reviews ---------- */
+.reviews { text-align: center; padding: 72px 0; }
+.review-text { font-family: var(--serif); font-style: italic; font-size: 28px; line-height: 1.35; max-width: 680px; margin: 0 auto 12px; min-height: 76px; transition: opacity .3s; }
+.review-by { font-size: 13px; color: var(--muted); margin: 0 0 16px; }
+.stars { color: var(--gold-dark); letter-spacing: 2px; }
+.review-nav { display: flex; justify-content: center; align-items: center; gap: 14px; font-size: 12px; color: var(--muted); }
+.review-nav button { background: none; border: 1px solid var(--line); width: 34px; height: 34px; border-radius: 50%; cursor: pointer; }
+
+/* ---------- 14. Footer ---------- */
+.site-footer { border-top: 1px solid var(--line); padding: 56px 0 28px; font-size: 13px; color: var(--body); }
+.footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.4fr; gap: 32px; }
+.footer-grid h4 { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink); font-weight: 500; margin: 0 0 12px; }
+.footer-grid a { display: block; padding: 3px 0; }
+.footer-grid a:hover { color: var(--ink); }
+.footer-brand .logo { width: 44px; height: 54px; margin-bottom: 12px; }
+.newsletter { display: flex; gap: 6px; }
+.newsletter .input { height: 40px; }
+.newsletter .btn { padding: 0 16px; }
+.footer-bottom {
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  border-top: 1px solid var(--line); margin-top: 40px; padding-top: 20px;
+  font-size: 12px; color: var(--muted);
+}
+.pay-icons { display: flex; gap: 10px; align-items: center; }
+
+/* ---------- 15. Simple content pages (login, about, etc.) ---------- */
+.page-head { padding: 56px 0 24px; text-align: center; }
+.page-head h1 { font-family: var(--serif); font-weight: 400; font-size: 46px; margin: 0; }
+.narrow { max-width: 440px; margin: 0 auto 72px; }
+.panel { background: #fff; border: 1px solid var(--line); padding: 28px; }
+
+/* ---------- 16. Fade-in on scroll ---------- */
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* ---------- 17. Tablet and mobile ---------- */
+@media (max-width: 960px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .split { grid-template-columns: 1fr; }
+  .split-text { padding: 48px 0; }
+}
+@media (max-width: 720px) {
+  .nav { height: 62px; }
+  .nav-links { display: none; }
+  .menu-btn { display: flex !important; background: none; border: 0; padding: 0; font-size: 22px; cursor: pointer; }
+  .nav-icons .hide-sm { display: none; }
+  .nav-logo .logo { width: 32px; height: 39px; }
+  .hero { min-height: 480px; }
+  .hero-text { padding-top: 56px; padding-left: 16px; padding-right: 16px; }
+  .hero h1 { font-size: 40px; letter-spacing: 3px; }
+  .hero-art { width: 112%; bottom: -50px; }
+  .announce { font-size: 10px; letter-spacing: 1px; }
+  .trust { grid-template-columns: 1fr 1fr; }
+  .section-head h2 { font-size: 30px; }
+  .toolbar { width: 100%; justify-content: space-between; }
+  .grid { gap: 22px 12px; }
+  .bespoke .wrap { grid-template-columns: 1fr; }
+  .bespoke-cta { text-align: left; }
+  .process { gap: 14px; padding: 32px 16px; }
+  .step-icon { width: 72px; height: 72px; }
+  .review-text { font-size: 22px; }
+  .footer-grid { grid-template-columns: 1fr; }
+}

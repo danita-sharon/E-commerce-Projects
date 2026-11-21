@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 240">
+  <g transform="translate(60 40) rotate(-18 70 100)">
+    <path d="M70 10C45 10 38 55 40 100C42 150 50 190 75 190C98 190 104 150 104 100C104 55 96 10 70 10Z" fill="#2b2622"/>
+    <path d="M34 64L110 106V128L34 86Z" fill="#141210"/><path d="M110 64L34 106V128L110 86Z" fill="#26221f"/>
+  </g>
+  <g transform="translate(190 20) rotate(4 70 100)">
+    <path d="M70 10C45 10 38 55 40 100C42 150 50 190 75 190C98 190 104 150 104 100C104 55 96 10 70 10Z" fill="#8a4a22"/>
+    <path d="M34 64L110 106V128L34 86Z" fill="#6b3418"/><path d="M110 64L34 106V128L110 86Z" fill="#b06a35"/>
+  </g>
+  <g transform="translate(320 40) rotate(20 70 100)">
+    <path d="M70 10C45 10 38 55 40 100C42 150 50 190 75 190C98 190 104 150 104 100C104 55 96 10 70 10Z" fill="#2b2622"/>
+    <path d="M34 64L110 106V128L34 86Z" fill="#7a2a22"/><path d="M110 64L34 106V128L110 86Z" fill="#922f25"/>
+  </g>
+</svg>
