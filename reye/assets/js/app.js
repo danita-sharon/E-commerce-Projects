@@ -391,3 +391,84 @@ if (checkoutForm) {
     });
   });
 }
+
+/* ---------- Reye AI chat ---------- */
+const ai = $('#reyeAI');
+if (ai) {
+  const panel = $('#aiPanel'), log = $('#aiLog'), chips = $('#aiChips'), form = $('#aiForm'), input = $('#aiInput');
+  let started = false;
+  const saved = (() => { try { return JSON.parse(sessionStorage.getItem('reyeAI') || '[]'); } catch { return []; } })();
+
+  // Add a message bubble. Text is inserted as text (never as HTML), so it is always safe.
+  const bubble = (text, who, links = []) => {
+    const el = document.createElement('div');
+    el.className = 'ai-msg ' + who;
+    el.textContent = text;
+    if (links.length) {
+      const box = document.createElement('div');
+      box.className = 'ai-links';
+      links.forEach(l => {
+        const a = document.createElement('a');
+        a.href = l.url; a.textContent = l.label;
+        if (/^https?:\/\/wa\.me/.test(l.url)) { a.target = '_blank'; a.rel = 'noopener'; }
+        box.appendChild(a);
+      });
+      el.appendChild(box);
+    }
+    log.appendChild(el);
+    log.scrollTop = log.scrollHeight;
+  };
+  const remember = (entry) => {
+    saved.push(entry);
+    try { sessionStorage.setItem('reyeAI', JSON.stringify(saved.slice(-30))); } catch {}
+  };
+  const showChips = (list) => {
+    chips.innerHTML = '';
+    list.forEach(c => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.textContent = c;
+      b.addEventListener('click', () => send(c));
+      chips.appendChild(b);
+    });
+  };
+
+  const open = () => {
+    ai.classList.add('open'); panel.hidden = false; $('#aiLaunch').setAttribute('aria-expanded', 'true');
+    if (!started) {
+      started = true;
+      if (saved.length) {
+        saved.forEach(m => bubble(m.text, m.who, m.links || []));
+      } else {
+        const hello = "Hi, I'm Reye AI. I can help with sizes, delivery, payment and bespoke orders. If there's something we don't have yet, tell me and I'll pass it to the team.";
+        bubble(hello, 'bot'); remember({ text: hello, who: 'bot' });
+      }
+      showChips(['Size help', 'Delivery', 'Bestsellers', 'Do you have loafers?']);
+    }
+    setTimeout(() => input.focus(), 50);
+  };
+  const close = () => { ai.classList.remove('open'); panel.hidden = true; $('#aiLaunch').setAttribute('aria-expanded', 'false'); };
+
+  async function send(text) {
+    text = text.trim();
+    if (!text) { input.placeholder = 'Type a message first'; return; }
+    input.placeholder = 'Ask about sizes, delivery, anything';
+    bubble(text, 'me'); remember({ text, who: 'me' });
+    input.value = ''; showChips([]);
+    const typing = document.createElement('div');
+    typing.className = 'ai-typing'; typing.innerHTML = '<span></span><span></span><span></span>';
+    log.appendChild(typing); log.scrollTop = log.scrollHeight;
+
+    const res = await post('api/chat.php', { message: text });
+    await new Promise(r => setTimeout(r, 350));   // a short, natural pause
+    typing.remove();
+    const reply = res.ok ? res.reply : { text: res.message || 'Something went wrong. Try again.', chips: [], links: [] };
+    bubble(reply.text, 'bot', reply.links || []);
+    remember({ text: reply.text, who: 'bot', links: reply.links || [] });
+    showChips(reply.chips || []);
+  }
+
+  $('#aiLaunch').addEventListener('click', open);
+  $('#aiClose').addEventListener('click', close);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !panel.hidden) close(); });
+  form.addEventListener('submit', e => { e.preventDefault(); send(input.value); });
+}

@@ -56,6 +56,8 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<?php require __DIR__ . '/chat_widget.php'; ?>
+
 <script src="<?= url('assets/js/app.js') ?>?v=<?= filemtime(__DIR__ . '/../assets/js/app.js') ?>"></script>
 </body>
 </html>
