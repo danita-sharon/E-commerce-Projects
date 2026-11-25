@@ -164,7 +164,7 @@ CREATE TABLE newsletter_subscribers (
 -- Admin login: admin@reye.com / Reye@Admin2026  (change after first login)
 INSERT INTO users (full_name, email, phone, password_hash, role) VALUES
 ('Reye Admin', 'admin@reye.com', '0536137600',
- '$2y$10$8av9Mu2zKECpt/eKk5K/Cu5qgEhzlK1aYNGIP.plPKRRVfmRmc6qW', 'admin');
+ '$2y$10$8.aZz6QtRegMWpbCJOJxbuBMWyKvRuF2vIQL8JqgU9V6pfVrngrvW', 'admin');
 
 INSERT INTO categories (name, slug) VALUES
 ('Slides', 'slides'), ('Pouches', 'pouches');

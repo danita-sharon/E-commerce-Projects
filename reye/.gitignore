@@ -2,7 +2,10 @@
 config/config.php
 
 # Product photos uploaded through the admin dashboard
-uploads/*
+uploads/products/*
+
+# Keep these safety files
+!uploads/.htaccess
 !uploads/.gitkeep
 
 # Mac system files
