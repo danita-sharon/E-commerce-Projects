@@ -15,7 +15,7 @@ require __DIR__ . '/includes/header.php';
 <div class="wrap">
   <div class="about-intro">
     <svg class="logo" style="width:64px;height:79px;margin:0 auto 20px"><use href="#reye-logo"/></svg>
-    <p>Reye (said "rai") makes leather slides and pouches by hand in Ghana. Every pair is cut, stitched and finished by a craftsman, then sealed with the Reye R, so no two pairs are ever exactly alike.</p>
+    <p>Reye (said "rai") makes leather slides and pouches by hand in Ghana, mostly for men, with smaller batches of women's pairs. Every pair is cut, stitched and finished by a craftsman, then sealed with the Reye R, so no two pairs are ever exactly alike.</p>
     <p>We make pieces to wear for years, not for a season. And if you want something that is completely yours, we will make it for you.</p>
   </div>
 

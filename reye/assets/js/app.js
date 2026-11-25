@@ -180,12 +180,18 @@ let currentFilter = new URLSearchParams(location.search).get('cat') || 'all';
 function applyFilter() {
   let shown = 0;
   $$('.card', grid).forEach(card => {
-    const show = currentFilter === 'all' || card.dataset.type === currentFilter;
+    const show = currentFilter === 'all'
+      || (currentFilter === 'women' ? ['women', 'unisex'].includes(card.dataset.gender) && card.dataset.type !== 'pouches' : card.dataset.type === currentFilter);
     card.hidden = !show;
     if (show) shown++;
   });
   const empty = $('#emptyNote');
-  if (empty) empty.hidden = shown > 0;
+  if (empty) {
+    empty.hidden = shown > 0;
+    empty.textContent = currentFilter === 'women'
+      ? "Our women's pairs are made in small batches and are all spoken for right now. Ask Reye AI or order bespoke in your size."
+      : 'Nothing here yet. Check back soon.';
+  }
   const count = $('#pieceCount');
   if (count) count.textContent = `${shown} ${shown === 1 ? 'piece' : 'pieces'}`;
 

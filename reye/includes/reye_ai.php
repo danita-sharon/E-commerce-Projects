@@ -11,7 +11,7 @@
 //    built-in answers still cover everything.
 // =========================================================
 
-const AI_SIZE_TABLE = [40 => 25.4, 41 => 26.0, 42 => 26.7, 43 => 27.3, 44 => 28.0, 45 => 28.6];
+const AI_SIZE_TABLE = [36 => 23.0, 37 => 23.6, 38 => 24.3, 39 => 24.9, 40 => 25.4, 41 => 26.0, 42 => 26.7, 43 => 27.3, 44 => 28.0, 45 => 28.6];
 
 // Each reply: ['text' => ..., 'chips' => [...], 'links' => [['label' => ..., 'url' => ...]]]
 function ai_reply(string $text, array $chips = [], array $links = []): array
@@ -21,7 +21,7 @@ function ai_reply(string $text, array $chips = [], array $links = []): array
 
 function ai_products(PDO $pdo): array
 {
-    $rows = $pdo->query('SELECT p.id, p.name, p.slug, p.price, p.stock, p.sizes, p.badge, c.slug AS cat
+    $rows = $pdo->query('SELECT p.id, p.name, p.slug, p.price, p.stock, p.sizes, p.badge, p.gender, c.slug AS cat
                          FROM products p JOIN categories c ON c.id = p.category_id WHERE p.is_active = 1 ORDER BY p.id')->fetchAll();
     $colours = [];
     foreach ($pdo->query('SELECT product_id, colour_name FROM product_colours ORDER BY id') as $c) {
@@ -63,7 +63,8 @@ function ai_find_product(array $products, string $msg): ?array
 function ai_product_line(array $p): string
 {
     $stock = (int) $p['stock'] <= 0 ? 'sold out right now' : ((int) $p['stock'] <= 3 ? 'only ' . (int) $p['stock'] . ' left' : 'in stock');
-    return $p['name'] . ': ' . money($p['price']) . ($p['colours'] ? ' in ' . implode(', ', $p['colours']) : '') . " ($stock)";
+    $who = ['women' => " (women's)", 'men' => '', 'unisex' => ''][$p['gender'] ?? 'men'] ?? '';
+    return $p['name'] . $who . ': ' . money($p['price']) . ($p['colours'] ? ' in ' . implode(', ', $p['colours']) : '') . " ($stock)";
 }
 
 // Main entry point
@@ -150,7 +151,7 @@ function reye_ai(PDO $pdo, string $message): array
             $cm = (float) $m[1];
             $size = null;
             foreach (AI_SIZE_TABLE as $eu => $len) {
-                if ($cm <= $len + 0.2) { $size = $eu; break; }
+                if ($cm <= $len + 0.2) { $size = $eu; break; }   // EU 36-45 covers women's and men's
             }
             if ($size) {
                 return ai_reply("For a $cm cm foot, go for EU $size. If you're between sizes or have wide feet, go up one.", ['Bestsellers'],
@@ -159,8 +160,28 @@ function reye_ai(PDO $pdo, string $message): array
             return ai_reply("For a $cm cm foot, our standard sizes may not fit perfectly, but a bespoke pair will. We make it to your exact measurement.", [],
                 [['label' => 'Start a bespoke order', 'url' => url('bespoke.php')]]);
         }
-        return ai_reply('Our slides come in EU 40 to 45. Measure from your heel to your longest toe: 26 cm is a 41, 26.7 cm a 42, 27.3 cm a 43. Tell me your foot length and I\'ll pick your size.',
+        return ai_reply('Men\'s slides come in EU 40 to 45 and women\'s in EU 36 to 41. Measure from your heel to your longest toe (for example 24.3 cm is a 38, 26.7 cm a 42) and tell me the number: I\'ll pick your size.',
             [], [['label' => 'Size guide', 'url' => url('shop.php#size-guide')]]);
+    }
+
+    // ---------- Women's (and men's) footwear ----------
+    if (preg_match('/\b(women|woman|womens|ladies|lady|female|girls?|her|she|wife|girlfriend|mum|mom|sister)\b/', $msg)
+        && !preg_match('/\b(pouch|pouches|bag)\b/', $msg)) {
+        $womens = array_values(array_filter($products, fn($p) => ($p['gender'] ?? '') === 'women' && (int) $p['stock'] > 0));
+        if ($womens) {
+            $links = array_map(fn($p) => ['label' => $p['name'], 'url' => url('product.php?slug=' . urlencode($p['slug']))], array_slice($womens, 0, 3));
+            return ai_reply("Yes! Reye makes women's footwear too, in smaller batches. Available now: " . implode(' · ', array_map('ai_product_line', $womens))
+                . ". Women's sizes run EU 36 to 41.", ['Size help'], array_merge($links, [['label' => "All women's", 'url' => url('shop.php?cat=women')]]));
+        }
+        return ai_offer_request($chat, $message, "Yes, Reye makes women's footwear too! They're made in smaller batches than the men's, so there are none listed right now, but they can be made to order. Want me to send your size and the style you like to the Reye team?");
+    }
+    if (preg_match('/\b(men|mens|man|male|guys?|husband|boyfriend|dad|father|brother|him|he)\b/', $msg)
+        && preg_match('/\b(slides?|sandals?|slippers?|footwear|shoes?|have|sell|for)\b/', $msg)) {
+        $mens = array_values(array_filter($products, fn($p) => ($p['gender'] ?? 'men') === 'men' && (int) $p['stock'] > 0));
+        if ($mens) {
+            return ai_reply('Most of our pairs are men\'s, in EU 40 to 45: ' . implode(' · ', array_map('ai_product_line', array_slice($mens, 0, 4))) . '.', ['Size help'],
+                [['label' => 'Shop slides', 'url' => url('shop.php?cat=slides')]]);
+        }
     }
 
     // ---------- Delivery ----------
@@ -301,7 +322,8 @@ function ai_ask_claude(PDO $pdo, string $message, array $products, array &$chat)
         . "PRODUCTS:\n$catalogue\n\nDELIVERY:\n$delivery\nGhana 1-3 working days, international about 7-10.\n\n"
         . "PAYMENT: Paystack, card or mobile money (MTN MoMo, Telecel Cash, AT Money).\n"
         . "BESPOKE: custom pairs in 7 to 10 days; price confirmed on WhatsApp.\n"
-        . "SIZES: EU 40-45. Foot length 25.4cm=40, 26=41, 26.7=42, 27.3=43, 28=44, 28.6=45.";
+        . "RANGE: mostly men's footwear, plus women's footwear in smaller batches (can be made to order), and unisex pouches.\n"
+        . "SIZES: men's EU 40-45, women's EU 36-41. Foot length 23cm=36, 23.6=37, 24.3=38, 24.9=39, 25.4=40, 26=41, 26.7=42, 27.3=43, 28=44, 28.6=45.";
 
     $history = array_slice($chat['history'] ?? [], -6);
     $history[] = ['role' => 'user', 'content' => mb_substr($message, 0, 500)];

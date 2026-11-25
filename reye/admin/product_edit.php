@@ -12,7 +12,7 @@ $categories = $pdo->query('SELECT * FROM categories ORDER BY id')->fetchAll();
 $errors = [];
 
 // Load the product (or start a blank one)
-$product = ['name' => '', 'category_id' => $categories[0]['id'] ?? 1, 'price' => '', 'stock' => 0,
+$product = ['name' => '', 'category_id' => $categories[0]['id'] ?? 1, 'gender' => 'men', 'price' => '', 'stock' => 0,
             'sizes' => '40,41,42,43,44,45', 'badge' => '', 'description' => '', 'is_active' => 1];
 $colours = [];
 if ($id) {
@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $product = [
         'name'        => trim($_POST['name'] ?? ''),
         'category_id' => (int) ($_POST['category_id'] ?? 0),
+        'gender'      => in_array($_POST['gender'] ?? '', ['men', 'women', 'unisex'], true) ? $_POST['gender'] : 'men',
         'price'       => trim($_POST['price'] ?? ''),
         'stock'       => (int) ($_POST['stock'] ?? 0),
         'sizes'       => implode(',', array_filter(array_map('trim', explode(',', $_POST['sizes'] ?? '')), 'strlen')),
@@ -82,15 +83,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $newFiles = [];
         try {
             $slug = make_slug($pdo, $product['name'], $id);
-            $vals = [$product['category_id'], $product['name'], $slug, $product['description'], $product['price'],
+            $vals = [$product['category_id'], $product['gender'], $product['name'], $slug, $product['description'], $product['price'],
                      $product['sizes'], $product['stock'], $product['badge'] ?: null, $product['is_active']];
             if ($id) {
-                $pdo->prepare('UPDATE products SET category_id = ?, name = ?, slug = ?, description = ?, price = ?,
+                $pdo->prepare('UPDATE products SET category_id = ?, gender = ?, name = ?, slug = ?, description = ?, price = ?,
                                sizes = ?, stock = ?, badge = ?, is_active = ? WHERE id = ?')
                     ->execute(array_merge($vals, [$id]));
             } else {
-                $pdo->prepare('INSERT INTO products (category_id, name, slug, description, price, sizes, stock, badge, is_active)
-                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')->execute($vals);
+                $pdo->prepare('INSERT INTO products (category_id, gender, name, slug, description, price, sizes, stock, badge, is_active)
+                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')->execute($vals);
                 $id = (int) $pdo->lastInsertId();
             }
 
@@ -195,15 +196,22 @@ require __DIR__ . '/_header.php';
           <?php endforeach; ?>
         </select>
       </label>
-      <label class="field"><span>Price (GH₵)</span><input class="input" name="price" type="number" step="0.01" min="0" value="<?= e($product['price']) ?>" required></label>
+      <label class="field"><span>Made for</span>
+        <select class="input" name="gender">
+          <?php foreach (['men' => 'Men', 'women' => 'Women', 'unisex' => 'Everyone (unisex)'] as $g => $label): ?>
+            <option value="<?= $g ?>" <?= ($product['gender'] ?? 'men') === $g ? 'selected' : '' ?>><?= $label ?></option>
+          <?php endforeach; ?>
+        </select>
+      </label>
     </div>
+    <label class="field"><span>Price (GH₵)</span><input class="input" name="price" type="number" step="0.01" min="0" value="<?= e($product['price']) ?>" required></label>
     <div class="two-col">
       <label class="field"><span>Stock (pairs or pieces available)</span><input class="input" name="stock" type="number" min="0" value="<?= (int) $product['stock'] ?>"></label>
       <label class="field"><span>Badge (optional)</span><input class="input" name="badge" value="<?= e($product['badge']) ?>" placeholder="NEW, BESTSELLER, LIMITED..." list="badges">
         <datalist id="badges"><option value="NEW"><option value="BESTSELLER"><option value="LIMITED"><option value="ONLY 3 LEFT"></datalist>
       </label>
     </div>
-    <label class="field"><span>Sizes, separated by commas</span><input class="input" name="sizes" value="<?= e($product['sizes']) ?>" placeholder="40,41,42,43,44,45  or  One size"></label>
+    <label class="field"><span>Sizes, separated by commas</span><input class="input" name="sizes" value="<?= e($product['sizes']) ?>" placeholder="Men: 40,41,42,43,44,45 · Women: 36,37,38,39,40,41 · Pouches: One size"></label>
     <label class="field"><span>Description</span><textarea class="input" name="description" rows="4"><?= e($product['description']) ?></textarea></label>
     <label class="check"><input type="checkbox" name="is_active" <?= $product['is_active'] ? 'checked' : '' ?>> Show this product in the shop</label>
   </div>

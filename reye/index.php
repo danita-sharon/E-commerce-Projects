@@ -44,6 +44,7 @@ require __DIR__ . '/includes/header.php';
         <div class="filters" id="filters">
           <button class="active" data-filter="all">All</button>
           <button data-filter="slides">Slides</button>
+          <button data-filter="women">Women</button>
           <button data-filter="pouches">Pouches</button>
         </div>
         <label class="sr-only" for="sortSelect">Sort</label>

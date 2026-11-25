@@ -60,7 +60,7 @@ require __DIR__ . '/_header.php';
             <?php endif; ?>
           </div>
         </td>
-        <td><strong><?= e($p['name']) ?></strong><br><small class="muted"><?= e($p['category_name']) ?><?= $p['badge'] ? ' · ' . e($p['badge']) : '' ?></small></td>
+        <td><strong><?= e($p['name']) ?></strong><br><small class="muted"><?= e(['women' => "Women's ", 'men' => "Men's ", 'unisex' => ''][$p['gender'] ?? 'men'] . $p['category_name']) ?><?= $p['badge'] ? ' · ' . e($p['badge']) : '' ?></small></td>
         <td><?= money($p['price']) ?></td>
         <td><span class="<?= (int) $p['stock'] <= 3 ? 'low-stock' : '' ?>"><?= (int) $p['stock'] ?></span></td>
         <td>

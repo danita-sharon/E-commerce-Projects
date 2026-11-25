@@ -10,11 +10,12 @@ $cat = $_GET['cat'] ?? 'all';
 $products = get_products($pdo);
 $saved = wishlist_ids($pdo);
 
-$page_title = $cat === 'pouches' ? 'Pouches' : 'Shop';
+$titles = ['pouches' => 'Pouches', 'women' => "Women's", 'slides' => 'Slides'];
+$page_title = $titles[$cat] ?? 'Shop';
 $active = $cat === 'pouches' ? 'pouches' : 'shop';
 require __DIR__ . '/includes/header.php';
 ?>
-<section class="page-head"><p class="label">Handmade in Ghana</p><h1><?= $cat === 'pouches' ? 'Pouches' : 'The collection' ?></h1></section>
+<section class="page-head"><p class="label">Handmade in Ghana</p><h1><?= e(['pouches' => 'Pouches', 'women' => "Women's footwear", 'slides' => 'Slides'][$cat] ?? 'The collection') ?></h1></section>
 
 <section class="section" style="padding-top:8px">
   <div class="wrap">
@@ -24,6 +25,7 @@ require __DIR__ . '/includes/header.php';
         <div class="filters" id="filters">
           <button class="active" data-filter="all">All</button>
           <button data-filter="slides">Slides</button>
+          <button data-filter="women">Women</button>
           <button data-filter="pouches">Pouches</button>
         </div>
         <label class="sr-only" for="sortSelect">Sort</label>

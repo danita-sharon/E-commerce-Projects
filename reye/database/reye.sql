@@ -190,3 +190,13 @@ INSERT INTO delivery_regions (name, fee, free_over) VALUES
 ('Other regions in Ghana', 50.00, NULL), ('International', 250.00, NULL);
 
 INSERT INTO promo_codes (code, percent_off) VALUES ('REYEFAM10', 10);
+
+-- =========================================================
+-- Update 1: mark products as Men, Women or Unisex
+-- Run once in phpMyAdmin (reye_db -> SQL tab).
+-- =========================================================
+ALTER TABLE products
+  ADD COLUMN gender ENUM('men','women','unisex') NOT NULL DEFAULT 'men' AFTER category_id;
+
+-- Pouches are for everyone
+UPDATE products SET gender = 'unisex' WHERE category_id = (SELECT id FROM (SELECT id FROM categories WHERE slug = 'pouches') AS c);

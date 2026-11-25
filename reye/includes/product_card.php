@@ -78,6 +78,7 @@ function product_card(array $p, array $savedIds = []): void
     <article class="card reveal"
              data-id="<?= (int) $p['id'] ?>"
              data-type="<?= e($p['category_slug']) ?>"
+             data-gender="<?= e($p['gender'] ?? 'men') ?>"
              data-name="<?= e($p['name']) ?>"
              data-price="<?= e($p['price']) ?>"
              data-order="<?= (int) $p['id'] ?>">

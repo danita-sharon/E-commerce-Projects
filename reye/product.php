@@ -64,7 +64,7 @@ require __DIR__ . '/includes/header.php';
     </div>
 
     <div class="pd-info">
-      <p class="label"><?= e($product['category_name']) ?> · Handmade in Ghana</p>
+      <p class="label"><?= e(['women' => "Women's ", 'men' => "Men's ", 'unisex' => ''][$product['gender'] ?? 'men'] . $product['category_name']) ?> · Handmade in Ghana</p>
       <h1 class="pd-title"><?= e($product['name']) ?></h1>
       <p class="pd-price"><?= money($product['price']) ?></p>
       <?php if (!$soldOut && (int) $product['stock'] <= 5): ?>
