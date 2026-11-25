@@ -37,7 +37,8 @@ if (is_logged_in()) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
-  <link rel="stylesheet" href="<?= url('assets/css/style.css') ?>">
+  <!-- ?v= changes whenever the file changes, so browsers always load the latest version -->
+  <link rel="stylesheet" href="<?= url('assets/css/style.css') ?>?v=<?= filemtime(__DIR__ . '/../assets/css/style.css') ?>">
 </head>
 <body data-base="<?= e(BASE_URL) ?>" data-logged-in="<?= is_logged_in() ? '1' : '0' ?>">
 <?php require __DIR__ . '/logo.php'; ?>

@@ -19,7 +19,7 @@ require __DIR__ . '/includes/header.php';
 <section class="section" style="padding-top:8px">
   <div class="wrap">
     <div class="section-head">
-      <p style="margin:0;color:var(--muted);font-size:13px"><?= count($products) ?> pieces</p>
+      <p style="margin:0;color:var(--muted);font-size:13px" id="pieceCount"><?= count($products) ?> pieces</p>
       <div class="toolbar">
         <div class="filters" id="filters">
           <button class="active" data-filter="all">All</button>

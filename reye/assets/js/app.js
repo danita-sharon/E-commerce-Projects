@@ -186,6 +186,8 @@ function applyFilter() {
   });
   const empty = $('#emptyNote');
   if (empty) empty.hidden = shown > 0;
+  const count = $('#pieceCount');
+  if (count) count.textContent = `${shown} ${shown === 1 ? 'piece' : 'pieces'}`;
 
   // Pouches are one size, so hide the shoe size guide for them
   const pouchesOnly = currentFilter === 'pouches';
