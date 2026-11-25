@@ -6,8 +6,8 @@ require_once __DIR__ . '/includes/functions.php';
 require_login();
 
 $user = current_user();
-$stmt = $pdo->prepare('SELECT order_no, total, status, payment_status, created_at
-                       FROM orders WHERE user_id = ? ORDER BY created_at DESC');
+$stmt = $pdo->prepare("SELECT order_no, total, status, payment_status, created_at
+                       FROM orders WHERE user_id = ? AND payment_status = 'paid' ORDER BY created_at DESC");
 $stmt->execute([$user['id']]);
 $orders = $stmt->fetchAll();
 

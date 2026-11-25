@@ -34,7 +34,7 @@ require __DIR__ . '/includes/header.php';
         </select>
       </div>
     </div>
-    <p class="sub-note" id="size-guide">Pick a colour and size, then add to bag. <button class="link-btn" id="sizeGuideBtn">Size guide</button></p>
+    <p class="sub-note" id="size-guide"><span id="subNoteText">Pick a colour and size, then add to bag.</span> <button class="link-btn" id="sizeGuideBtn">Size guide</button></p>
     <?php require __DIR__ . '/includes/size_guide.php'; ?>
 
     <div class="grid" id="productGrid">

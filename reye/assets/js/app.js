@@ -186,6 +186,14 @@ function applyFilter() {
   });
   const empty = $('#emptyNote');
   if (empty) empty.hidden = shown > 0;
+
+  // Pouches are one size, so hide the shoe size guide for them
+  const pouchesOnly = currentFilter === 'pouches';
+  const guideBtn = $('#sizeGuideBtn');
+  if (guideBtn) guideBtn.hidden = pouchesOnly;
+  if (pouchesOnly) $('#sizeGuide')?.classList.remove('open');
+  const note = $('#subNoteText');
+  if (note) note.textContent = pouchesOnly ? 'Pick a colour, then add to bag.' : 'Pick a colour and size, then add to bag.';
 }
 
 $('#filters')?.addEventListener('click', (e) => {
@@ -309,5 +317,75 @@ if (bagLines) {
     $('#bagSubtotal').textContent = res.subtotal;
     updateFreeBar(res.subtotal_raw);
     if (res.message) toast(res.message);
+  });
+}
+
+/* ---------- Checkout: live totals, promo code, Paystack ---------- */
+const checkoutForm = $('#checkoutForm');
+if (checkoutForm) {
+  const subtotal = Number(checkoutForm.dataset.subtotal);
+  let discountPercent = 0;
+  const cedis = (n) => 'GH₵ ' + n.toLocaleString('en-GH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  // Show the same totals the server will charge (the server recalculates them anyway)
+  const updateTotals = () => {
+    const region = $('input[name="region_id"]:checked', checkoutForm);
+    const free = region.dataset.free && subtotal >= Number(region.dataset.free);
+    const fee = free ? 0 : Number(region.dataset.fee);
+    const discount = Math.round(subtotal * discountPercent) / 100;
+    $('#sumDelivery').textContent = fee === 0 ? 'Free' : cedis(fee);
+    $('#sumDiscountRow').hidden = discount === 0;
+    $('#sumDiscount').textContent = '− ' + cedis(discount);
+    $('#sumTotal').textContent = cedis(subtotal - discount + fee);
+  };
+  $$('input[name="region_id"]', checkoutForm).forEach(r => r.addEventListener('change', updateTotals));
+  updateTotals();
+
+  // Promo code
+  $('#promoBtn').addEventListener('click', async () => {
+    const code = $('#promoInput').value.trim();
+    const msg = $('#promoMsg');
+    if (!code) { msg.style.color = 'var(--danger)'; msg.textContent = 'Enter a code first.'; return; }
+    const res = await post('api/promo.php', { code });
+    msg.style.color = res.ok ? 'var(--success)' : 'var(--danger)';
+    msg.textContent = res.message;
+    discountPercent = res.ok ? res.percent : 0;
+    $('#promoCode').value = res.ok ? res.code : '';
+    $('#sumDiscountLabel').textContent = res.ok ? res.code : 'Discount';
+    updateTotals();
+  });
+  $('#promoInput').addEventListener('input', () => ($('#promoMsg').textContent = ''));
+
+  // Pay
+  const payBtn = $('#payBtn');
+  const payError = $('#payError');
+  payBtn.addEventListener('click', async () => {
+    payError.textContent = '';
+    const data = Object.fromEntries(new FormData(checkoutForm));
+    if (!data.full_name.trim()) { payError.textContent = 'Enter the name for delivery.'; return; }
+    if (!/^\+?\d{9,15}$/.test(data.phone.replace(/\s/g, ''))) { payError.textContent = 'Enter a valid phone number for delivery.'; return; }
+    if (data.address.trim().length < 5) { payError.textContent = 'Enter your delivery address.'; checkoutForm.address.focus(); return; }
+
+    payBtn.disabled = true;
+    payBtn.textContent = 'Preparing payment...';
+    const order = await post('api/checkout.php', data);
+    payBtn.disabled = false;
+    payBtn.innerHTML = '<i class="ti ti-lock"></i> Pay with Paystack';
+
+    if (!order.ok) { payError.textContent = order.message; return; }
+    if (typeof PaystackPop === 'undefined') { payError.textContent = "Paystack didn't load. Check your internet connection and try again."; return; }
+
+    const popup = new PaystackPop();
+    popup.newTransaction({
+      key: order.key,
+      email: order.email,
+      amount: order.amount,          // in pesewas, worked out by the server
+      currency: 'GHS',
+      reference: order.reference,
+      channels: ['card', 'mobile_money'],
+      onSuccess: () => { window.location = order.verify; },
+      onCancel: () => toast('Payment cancelled. Your bag is still here when you are ready.'),
+      onError: () => { payError.textContent = 'The payment window could not open. Please try again.'; },
+    });
   });
 }
