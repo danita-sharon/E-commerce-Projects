@@ -4,11 +4,20 @@
 // =========================================================
 require_once __DIR__ . '/db.php';
 
+// ---- On the live server, never show PHP error details to visitors ----
+if (APP_ENV !== 'local') {
+    ini_set('display_errors', '0');
+    ini_set('log_errors', '1');
+}
+
 // ---- Secure session ----
+// Reye has its own cookie name, limited to the Reye folder, so it never mixes
+// with other sites on the same server (e.g. other students' projects).
 if (session_status() === PHP_SESSION_NONE) {
+    session_name('REYE_SESSION');
     session_set_cookie_params([
         'lifetime' => 0,
-        'path'     => '/',
+        'path'     => rtrim(BASE_URL, '/') . '/',
         'secure'   => !empty($_SERVER['HTTPS']),   // only over HTTPS when available
         'httponly' => true,                        // JavaScript can't read the session cookie
         'samesite' => 'Lax',                       // helps block cross-site requests
